@@ -35,7 +35,7 @@ def sortInputs(list_input,excl=[]):
     for t in tags:
         current_tag[t] = 'DEFAULT'
     for line in list_input:
-        #print line
+        #print(line
         line = line.strip()
         if line.startswith(comment):
             continue
@@ -44,11 +44,11 @@ def sortInputs(list_input,excl=[]):
                 current_tag[t] = line.strip(t+' ')
         if line.startswith('Emission'):
             if current_tag['~'] in excl:
-                print 'Excluding [%s]: %s'%(current_tag['~'],line)
+                print('Excluding [%s]: %s'%(current_tag['~'],line))
                 continue
             line = line.strip('/')
             list_.append( (line, OrderedDict(sorted(current_tag.items(), key=lambda x: x[0]))) )
-    print list_
+    print(list_)
 
     return list_
 
@@ -59,11 +59,11 @@ def getFiles(list_, tag_):
     navg = 0
     for line in list_:
         if line[1]["#"] != tag_: continue
-        print 'Processing: %s'%line[0]
+        print('Processing: %s'%line[0])
         ## filename: (order, legend, (color,style), avg)
         files[line[0]]=(navg,"%s %s %s%s"%(line[1]["@"],line[1]["#"],line[1]["~"],line[1]["+"]),(line[1]["="],line[1]["-"]),"1")
         navg += 1
-    #print "[End getFiles]"
+    #print("[End getFiles]"
     return OrderedDict(sorted(files.items(), key=lambda x: x[1]))
 
 ####################################################################################################
@@ -72,21 +72,21 @@ def getNF(file_, tag_):
     f_ = open(file_,'r')
     for line in f_:
         list_ = (line.strip("\n")).split(":")
-        #print list_
+        #print(list_
         if not isinstance(tag_,list):
             tmptag = tag_
             if list_[0].find(tag_) != -1:
                 found = True
-                print ">>>>>>>>> Normalization factor [%s] = %f"%(tmptag,float(list_[1]))
+                print(">>>>>>>>> Normalization factor [%s] = %f"%(tmptag,float(list_[1])))
                 return float(list_[1])
         else:
             tmptag = tag_[0]+"_"+tag_[1]
             if list_[0].find(tag_[0]) != -1 and list_[0].find(tag_[1]) != -1:
                 found = True
-                print ">>>>>>>>> Normalization factor [%s] = %f"%(tmptag,float(list_[1]))
+                print(">>>>>>>>> Normalization factor [%s] = %f"%(tmptag,float(list_[1])))
                 return float(list_[1])
 
-    print ">>>>>>>>> NFTag[%s] not found. Using default normalization factor = 1.000"%(tmptag)
+    print(">>>>>>>>> NFTag[%s] not found. Using default normalization factor = 1.000"%(tmptag))
     return float(1)
 
 ####################################################################################################
@@ -115,9 +115,9 @@ def PlotAlphaNoAvg(files, outtag, x_range, y_range, kw, plotOpts, mypedcut):
 
     hbins = 180
     ## kw format: sample name,excitation wavelength
-    print "Making Alpha source measurement plot"
+    print("Making Alpha source measurement plot")
     for k in kw:
-        print k
+        print(k)
 
     ########################################
     ## Main result plots
@@ -152,7 +152,7 @@ def PlotAlphaNoAvg(files, outtag, x_range, y_range, kw, plotOpts, mypedcut):
     mfiles={}
     mtrees={}
     for fname,vals in files.items():
-        print fname, fidx
+        print(fname, fidx)
         hname= "%i"%fidx
         varexp = "areaFromScope*1.e9"
         rootname = 'root/' + fname + ".root"
@@ -164,7 +164,7 @@ def PlotAlphaNoAvg(files, outtag, x_range, y_range, kw, plotOpts, mypedcut):
         mtrees["%i"%fidx].Draw("%s>>myhist_%s"%(varexp,hname),"amplitude>%f && %s>=%f && %s<=%f"%(mypedcut, varexp, float(x_range.split(',')[0]),varexp,float(x_range.split(',')[1])))
 
         if options.verbose:
-            print '[Before normalization] histogram area of %40s = %15.2f'%(vals[1],myhists["%i"%fidx].Integral())
+            print('[Before normalization] histogram area of %40s = %15.2f'%(vals[1],myhists["%i"%fidx].Integral()))
         myhists["%i"%fidx].SetLineColor(fidx+1)
         #myhists["%i"%fidx].SetLineColor(int(vals[2][0]))
         #myhists["%i"%fidx].SetLineStyle(int(vals[2][1]))
@@ -172,13 +172,13 @@ def PlotAlphaNoAvg(files, outtag, x_range, y_range, kw, plotOpts, mypedcut):
         myhists["%i"%fidx].SetLineWidth(3)
 
         if options.verbose:
-            print '[After normalization ] Histogram area of %40s = %15.2f'%(vals[1],myhists["%i"%fidx].Integral())
+            print('[After normalization ] Histogram area of %40s = %15.2f'%(vals[1],myhists["%i"%fidx].Integral()))
 
         tleg.AddEntry(myhists["%i"%fidx],vals[1],"l")
 
         fidx+=1
 
-    print myhists
+    print(myhists)
 
 
     fidx = 0
@@ -249,7 +249,7 @@ def PlotAlphaNoAvg(files, outtag, x_range, y_range, kw, plotOpts, mypedcut):
 
         ## Calculate std. deviation of rDeltaA as systematic uncertainty
         uncsyst = numpy.std(arr_rDeltaA)
-        print 'Systematic uncertainty = %4.2f %%'%uncsyst
+        print('Systematic uncertainty = %4.2f %%'%uncsyst)
 
         systex = TLatex()
         systex.SetNDC(True)
@@ -316,23 +316,23 @@ class AlphaSourceFitter:
         myfit.SetLineColor(kBlack)
         tmpstatus = mHist.Fit("myfit_%s"%sigName,"SREMQ",)
         #tmpstatus = mHist.Fit("myfit_%s"%sigName,"SREMQ","same")
-        print "[GausFit Base] chi2 = %f; ndf = %i; nChi2 = %8.5f"%(myfit.GetChisquare()/nScale,myfit.GetNDF()+1,
-                                                                   myfit.GetChisquare()/nScale/(myfit.GetNDF()+1))
+        print("[GausFit Base] chi2 = %f; ndf = %i; nChi2 = %8.5f"%(myfit.GetChisquare()/nScale,myfit.GetNDF()+1,
+                                                                   myfit.GetChisquare()/nScale/(myfit.GetNDF()+1)))
         #if tmpstatus.Status() != 0:
         if tmpstatus.Status() != 4000: # with "M" fit option
-            print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit failed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
-            print "Fit Status = ",tmpstatus.Status()
-            print "EDM = ",tmpstatus.Edm()
+            print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit failed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]")
+            print("Fit Status = ",tmpstatus.Status())
+            print("EDM = ",tmpstatus.Edm())
             #mHist.Fit("myfit_%s"%sigName,"REM","")
-            print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Suggest to change fit range and retry <<<<<<<<<<<<<<<<<<<<<<<<<<<]"
+            print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Suggest to change fit range and retry <<<<<<<<<<<<<<<<<<<<<<<<<<<]")
     ##    else:
-    ##        print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit converged <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
+    ##        print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit converged <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]")
 
         vEng     = myfit.GetParameter(1)
         sigmaEng = myfit.GetParError(1)*sqrt(nScale)
 
-        #print "Delta Mean for  %-20s = %8.5f %%"%(sigName,(tempMax-vEng)/tempMax*100.)
-        print "[GausFit Base] Energy peak for %-20s = %8.5f +/- %-8.5f"%(sigName,vEng,sigmaEng)
+        #print("Delta Mean for  %-20s = %8.5f %%"%(sigName,(tempMax-vEng)/tempMax*100.)
+        print("[GausFit Base] Energy peak for %-20s = %8.5f +/- %-8.5f"%(sigName,vEng,sigmaEng))
         return vEng,sigmaEng,myfit
 
 
@@ -343,14 +343,14 @@ class AlphaSourceFitter:
         systEng = {}
         tmpFit = {}
 
-        print "{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49
+        print("{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49)
         ########################################################################
         ## Nominal
         ########################################################################
         vEng,sigmaEng,myfit = self.GausFitEngPeakBase(mHist,sigName,fitRng,nScale)
-        print "="*100
-        print "[GausFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng)
-        print "="*100
+        print("="*100)
+        print("[GausFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng))
+        print("="*100)
 
         ########################################################################
         ## FitRange Systematics
@@ -361,8 +361,8 @@ class AlphaSourceFitter:
 
         systFitRng = [fitRng[0]*1.05,fitRng[1]*1.05]
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.GausFitEngPeakBase(mHist,sigName,systFitRng,nScale)
-        print "[GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-        print "-"*100
+        print("[GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
+        print("-"*100)
 
         ## DOWN
         systName = "FitRngDN"
@@ -370,8 +370,8 @@ class AlphaSourceFitter:
 
         systFitRng = [fitRng[0]*0.95,fitRng[1]*0.95]
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.GausFitEngPeakBase(mHist,sigName,systFitRng,nScale)
-        print "[GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-        print "-"*100
+        print("[GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
+        print("-"*100)
 
         ########################################################################
         ## Rebin Systematics
@@ -384,7 +384,7 @@ class AlphaSourceFitter:
         nScale_ = nScale*2.0
 
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.GausFitEngPeakBase(systHist,sigName,fitRng,nScale_)
-        print "[GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
+        print("[GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
 
         ########################################################################
         ## Calculate Total Fit Systematics
@@ -395,9 +395,9 @@ class AlphaSourceFitter:
 
         sigmaEngTot = sqrt(sigmaEng*sigmaEng+sigmaSyst)
 
-        print "="*100
-        print "[GausFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot)
-        print "="*100
+        print("="*100)
+        print("[GausFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot))
+        print("="*100)
         ########################################################################
         ## Return Nominal Values
         ########################################################################
@@ -414,23 +414,23 @@ class AlphaSourceFitter:
 
         tmpstatus = mHist.Fit("myfit_%s"%sigName,"SREMQ0","")
         #tmpstatus = mHist.Fit("myfit_%s"%sigName,"SREM","same")
-        print "[LandauFit Base] chi2 = %f; ndf = %i; nChi2 = %8.5f"%(myfit.GetChisquare()/nScale,myfit.GetNDF()+1,
-                                                                     myfit.GetChisquare()/nScale/(myfit.GetNDF()+1))
+        print("[LandauFit Base] chi2 = %f; ndf = %i; nChi2 = %8.5f"%(myfit.GetChisquare()/nScale,myfit.GetNDF()+1,
+                                                                     myfit.GetChisquare()/nScale/(myfit.GetNDF()+1)))
         #if tmpstatus.Status() != 0:
         if tmpstatus.Status() != 4000: # with "M" fit option
-            print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit failed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
-            print "Fit Status = ",tmpstatus.Status()
-            print "EDM = ",tmpstatus.Edm()
+            print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit failed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]")
+            print("Fit Status = ",tmpstatus.Status())
+            print("EDM = ",tmpstatus.Edm())
             mHist.Fit("myfit_%s"%sigName,"R","")
-            print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Suggest to change fit range and retry <<<<<<<<<<<<<<<<<<<<<<<<<<<]"
+            print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Suggest to change fit range and retry <<<<<<<<<<<<<<<<<<<<<<<<<<<]")
     ##    else:
-    ##        print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit converged <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
+    ##        print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit converged <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
 
         vEng     = myfit.GetParameter(1)
         sigmaEng = myfit.GetParError(1)*sqrt(nScale)
 
-        #print "Delta Mean for  %-20s = %8.5f %%"%(sigName,(tempMax-vEng)/tempMax*100.)
-        print "[LandauFit Base] Energy peak for %-20s = %8.5f +/- %-8.5f"%(sigName,vEng,sigmaEng)
+        #print("Delta Mean for  %-20s = %8.5f %%"%(sigName,(tempMax-vEng)/tempMax*100.)
+        print("[LandauFit Base] Energy peak for %-20s = %8.5f +/- %-8.5f"%(sigName,vEng,sigmaEng))
         return vEng,sigmaEng,myfit
 
 
@@ -441,14 +441,14 @@ class AlphaSourceFitter:
         systEng = {}
         tmpFit = {}
 
-        print "{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49
+        print("{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49)
         ########################################################################
         ## Nominal
         ########################################################################
         vEng,sigmaEng,myfit = self.LandauFitEngPeakBase(mHist,sigName,fitRng,nScale)
-        print "="*100
-        print "[LandauFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng)
-        print "="*100
+        print("="*100)
+        print("[LandauFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng))
+        print("="*100)
 
         ########################################################################
         ## FitRange Systematics
@@ -459,8 +459,8 @@ class AlphaSourceFitter:
 
         systFitRng = [fitRng[0]*1.05,fitRng[1]*1.05]
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.LandauFitEngPeakBase(mHist,sigName,systFitRng,nScale)
-        print "[LandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-        print "-"*100
+        print("[LandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
+        print("-"*100)
 
         ## DOWN
         systName = "FitRngDN"
@@ -468,8 +468,8 @@ class AlphaSourceFitter:
 
         systFitRng = [fitRng[0]*0.95,fitRng[1]*0.95]
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.LandauFitEngPeakBase(mHist,sigName,systFitRng,nScale)
-        print "[LandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-        print "-"*100
+        print("[LandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
+        print("-"*100)
 
         ########################################################################
         ## Rebin Systematics
@@ -482,7 +482,7 @@ class AlphaSourceFitter:
         nScale_ = nScale*2.0
 
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.LandauFitEngPeakBase(systHist,sigName,fitRng,nScale_)
-        print "[LandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
+        print("[LandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
 
         ########################################################################
         ## Calculate Total Fit Systematics
@@ -493,9 +493,9 @@ class AlphaSourceFitter:
 
         sigmaEngTot = sqrt(sigmaEng*sigmaEng+sigmaSyst)
 
-        print "="*100
-        print "[LandauFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot)
-        print "="*100
+        print("="*100)
+        print("[LandauFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot))
+        print("="*100)
         ########################################################################
         ## Return Nominal Values
         ########################################################################
@@ -518,7 +518,7 @@ class AlphaSourceFitter:
             cScale = 0.5
             FitRng_ = fitRng
         else: # dummy
-            print "[2GausFit Base] Type = %s not defined!"%rType
+            print("[2GausFit Base] Type = %s not defined!"%rType)
             exit()
 
         tempfit = TF1("tempfit_%s"%sigName,"gaus",FitRng_[0],FitRng_[1])
@@ -526,7 +526,7 @@ class AlphaSourceFitter:
         #tmpstatus0 = mHist.Fit("tempfit_%s"%sigName,"SRQ","same")
 
         CosmicPeak = tempfit.GetParameter(1)*cScale
-        print "[2GausFit Base] CosmicPeak = %8.5f (%8.5f)"%(CosmicPeak,tempfit.GetParameter(1))
+        print("[2GausFit Base] CosmicPeak = %8.5f (%8.5f)"%(CosmicPeak,tempfit.GetParameter(1)))
 
         myfit = TF1("myfit_%s"%sigName,"gaus(0)+gaus(3)",FitRng_[0],FitRng_[1])
 
@@ -552,28 +552,29 @@ class AlphaSourceFitter:
 
         tmpstatus = mHist.Fit("myfit_%s"%sigName,"SREMQ0","")
         #tmpstatus = mHist.Fit("myfit_%s"%sigName,"SREM","same")
-        print "[2GausFit Base] chi2 = %f; ndf = %i; nChi2 = %8.5f"%(myfit.GetChisquare()/nScale,myfit.GetNDF()+1,
-                                                                    myfit.GetChisquare()/nScale/(myfit.GetNDF()+1))
+        print("[2GausFit Base] chi2 = %f; ndf = %i; nChi2 =) %8.5f"%(myfit.GetChisquare()/nScale,myfit.GetNDF()+1,
+                                                                    myfit.GetChisquare()/nScale/(myfit.GetNDF()+1)))
+                                                                    
         #if tmpstatus.Status() != 0:
         if tmpstatus.Status() != 4000: # with "M" fit option
-            print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit failed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
-            print "Fit Status = ",tmpstatus.Status()
-            print "EDM = ",tmpstatus.Edm()
+            print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit failed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]")
+            print("Fit Status = ",tmpstatus.Status())
+            print("EDM = ",tmpstatus.Edm())
             #mHist.Fit("myfit_%s"%sigName,"REM","")
-            print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Suggest to change fit range and retry <<<<<<<<<<<<<<<<<<<<<<<<<<<]"
+            print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Suggest to change fit range and retry <<<<<<<<<<<<<<<<<<<<<<<<<<<]")
     ##    else:
-    ##        print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit converged <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
+    ##        print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit converged <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]")
 
         vEng     = myfit.GetParameter(4)
         sigmaEng = myfit.GetParError(4)*sqrt(nScale)
 
         fMaxX = myfit.GetMaximumX(FitRng_[0],FitRng_[1])
-        print "[2GausFit Base] Function peak for %-18s = %8.5f"%(sigName,fMaxX)
-        print "[2GausFit Base] Energy peak for %-20s = %8.5f +/- %-8.5f"%(sigName,vEng,sigmaEng)
+        print("[2GausFit Base] Function peak for %-18s = %8.5f"%(sigName,fMaxX))
+        print("[2GausFit Base] Energy peak for %-20s = %8.5f +/- %-8.5f"%(sigName,vEng,sigmaEng))
 
         vDiff = abs(fMaxX-vEng)/fMaxX
         if  vDiff > 0.1:
-            print "[WARNING] Exceedingly large difference btw Func max and energy peak [%5.2f%%]! Check fitting results!"%(vDiff*100.)
+            print("[WARNING] Exceedingly large difference btw Func max and energy peak [%5.2f%%]! Check fitting results!"%(vDiff*100.))
 
         sigmaEng = sqrt(pow(fMaxX-vEng,2)+sigmaEng*sigmaEng)
         return vEng,sigmaEng,myfit
@@ -586,14 +587,14 @@ class AlphaSourceFitter:
         systEng = {}
         tmpFit = {}
 
-        print "{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49
+        print("{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49)
         ########################################################################
         ## Nominal
         ########################################################################
         vEng,sigmaEng,myfit = self.TwoGausFitEngPeakBase(mHist,sigName,fitRng,nScale,rType)
-        print "="*100
-        print "[2GausFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng)
-        print "="*100
+        print("="*100)
+        print("[2GausFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng))
+        print("="*100)
 
         ########################################################################
         ## FitRange Systematics
@@ -608,8 +609,8 @@ class AlphaSourceFitter:
             systFitRng = [fitRng[0]*1.05,fitRng[1]*1.05]
 
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.TwoGausFitEngPeakBase(mHist,sigName,systFitRng,nScale,rType)
-        print "[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-        print "-"*100
+        print("[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
+        print("-"*100)
 
         ## DOWN
         systName = "FitRngDN"
@@ -621,8 +622,8 @@ class AlphaSourceFitter:
             systFitRng = [fitRng[0]*0.95,fitRng[1]*0.95]
 
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.TwoGausFitEngPeakBase(mHist,sigName,systFitRng,nScale,rType)
-        print "[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-        print "-"*100
+        print("[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
+        print("-"*100)
 
         ########################################################################
         ## Rebin Systematics
@@ -635,7 +636,7 @@ class AlphaSourceFitter:
         nScale_ = nScale*2.0
 
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.TwoGausFitEngPeakBase(systHist,sigName,fitRng,nScale_,rType)
-        print "[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
+        print("[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
 
         ########################################################################
         ## Calculate Total Fit Systematics
@@ -646,9 +647,9 @@ class AlphaSourceFitter:
 
         sigmaEngTot = sqrt(sigmaEng*sigmaEng+sigmaSyst)
 
-        print "="*100
-        print "[2GausFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot)
-        print "="*100
+        print("="*100)
+        print("[2GausFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot))
+        print("="*100)
         ########################################################################
         ## Return Nominal Values
         ########################################################################
@@ -676,7 +677,7 @@ class AlphaSourceFitter:
         #tmpstatus0 = mHist.Fit("tempfit_%s"%sigName,"SRQ","same")
 
         ThermalPeak = tempfit.GetParameter(1)*cScale
-        print "[3GausFit Base] ThermalPeak = %8.5f (%8.5f)"%(ThermalPeak,tempfit.GetParameter(1))
+        print("[3GausFit Base] ThermalPeak = %8.5f (%8.5f)"%(ThermalPeak,tempfit.GetParameter(1)))
 
         myfit = TF1("myfit_%s"%sigName,"gaus(0)+gaus(3)+gaus(6)",FitRng_[0],FitRng_[1])
         if rType == "EJ2604X4P":
@@ -708,28 +709,28 @@ class AlphaSourceFitter:
 
         tmpstatus = mHist.Fit("myfit_%s"%sigName,"SREMQ0","")
         #tmpstatus = mHist.Fit("myfit_%s"%sigName,"SREM","same")
-        print "[3GausFit Base] chi2 = %f; ndf = %i; nChi2 = %8.5f"%(myfit.GetChisquare()/nScale,myfit.GetNDF()+1,
-                                                                    myfit.GetChisquare()/nScale/(myfit.GetNDF()+1))
+        print("[3GausFit Base] chi2 = %f; ndf = %i; nChi2 = %8.5f"%(myfit.GetChisquare()/nScale,myfit.GetNDF()+1,
+                                                                    myfit.GetChisquare()/nScale/(myfit.GetNDF()+1)))
         #if tmpstatus.Status() != 0:
         if tmpstatus.Status() != 4000: # with "M" fit option
-            print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit failed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
-            print "Fit Status = ",tmpstatus.Status()
-            print "EDM = ",tmpstatus.Edm()
+            print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit failed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]")
+            print("Fit Status = ",tmpstatus.Status())
+            print("EDM = ",tmpstatus.Edm())
             #mHist.Fit("myfit_%s"%sigName,"REM","")
-            print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Suggest to change fit range and retry <<<<<<<<<<<<<<<<<<<<<<<<<<<]"
+            print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Suggest to change fit range and retry <<<<<<<<<<<<<<<<<<<<<<<<<<<]")
     ##    else:
-    ##        print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit converged <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
+    ##        print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit converged <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]")
 
         vEng     = myfit.GetParameter(7)
         sigmaEng = myfit.GetParError(7)*sqrt(nScale)
 
         fMaxX = myfit.GetMaximumX(FitRng_[0],FitRng_[1])
-        print "[3GausFit Base] Function peak for %-18s = %8.5f"%(sigName,fMaxX)
-        print "[3GausFit Base] Energy peak for %-20s = %8.5f +/- %-8.5f"%(sigName,vEng,sigmaEng)
+        print("[3GausFit Base] Function peak for %-18s = %8.5f"%(sigName,fMaxX))
+        print("[3GausFit Base] Energy peak for %-20s = %8.5f +/- %-8.5f"%(sigName,vEng,sigmaEng))
 
         vDiff = abs(fMaxX-vEng)/fMaxX
         if  vDiff > 0.1:
-            print "[WARNING] Exceedingly large difference btw Func max and energy peak [%5.2f%%]! Check fitting results!"%(vDiff*100.)
+            print("[WARNING] Exceedingly large difference btw Func max and energy peak [%5.2f%%]! Check fitting results!"%(vDiff*100.))
 
         sigmaEng = sqrt(pow(fMaxX-vEng,2)+sigmaEng*sigmaEng)
         return vEng,sigmaEng,myfit
@@ -742,14 +743,14 @@ class AlphaSourceFitter:
         systEng = {}
         tmpFit = {}
 
-        print "{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49
+        print("{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49)
         ########################################################################
         ## Nominal
         ########################################################################
         vEng,sigmaEng,myfit = self.TriGausFitEngPeakBase(mHist,sigName,fitRng,nScale,rType)
-        print "="*100
-        print "[3GausFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng)
-        print "="*100
+        print("="*100)
+        print("[3GausFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng))
+        print("="*100)
 
         ########################################################################
         ## FitRange Systematics
@@ -764,8 +765,8 @@ class AlphaSourceFitter:
             systFitRng = [fitRng[0]*1.05,fitRng[1]*1.05]
 
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.TriGausFitEngPeakBase(mHist,sigName,systFitRng,nScale,rType)
-        print "[3GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-        print "-"*100
+        print("[3GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
+        print("-"*100)
 
         ## DOWN
         systName = "FitRngDN"
@@ -777,8 +778,8 @@ class AlphaSourceFitter:
             systFitRng = [fitRng[0]*0.95,fitRng[1]*0.95]
 
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.TriGausFitEngPeakBase(mHist,sigName,systFitRng,nScale,rType)
-        print "[3GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-        print "-"*100
+        print("[3GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
+        print("-"*100)
 
         ########################################################################
         ## Rebin Systematics
@@ -791,7 +792,7 @@ class AlphaSourceFitter:
         nScale_ = nScale*2.0
 
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.TriGausFitEngPeakBase(systHist,sigName,fitRng,nScale_,rType)
-        print "[3GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
+        print("[3GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
 
         ########################################################################
         ## Calculate Total Fit Systematics
@@ -802,9 +803,9 @@ class AlphaSourceFitter:
 
         sigmaEngTot = sqrt(sigmaEng*sigmaEng+sigmaSyst)
 
-        print "="*100
-        print "[3GausFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot)
-        print "="*100
+        print("="*100)
+        print("[3GausFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot))
+        print("="*100)
         ########################################################################
         ## Return Nominal Values
         ########################################################################
@@ -819,14 +820,14 @@ class AlphaSourceFitter:
 ##        systEng = {}
 ##        tmpFit = {}
 
-##        print "{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49
+##        print("{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49
 ##        ########################################################################
 ##        ## Nominal
 ##        ########################################################################
 ##        vEng,sigmaEng,myfit = self.TwoGausFitEngPeakBase(mHist,sigName,fitRng,nScale,rType)
-##        print "="*100
-##        print "[2GausFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng)
-##        print "="*100
+##        print("="*100)
+##        print("[2GausFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng))
+##        print("="*100)
 
 ##        ########################################################################
 ##        ## FitRange Systematics
@@ -841,8 +842,8 @@ class AlphaSourceFitter:
 ##            systFitRng = [fitRng[0]*1.05,fitRng[1]*1.05]
 
 ##        systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.TwoGausFitEngPeakBase(mHist,sigName,systFitRng,nScale,rType)
-##        print "[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-##        print "-"*100
+##        print("[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
+##        print("-"*100
 
 ##        ## DOWN
 ##        systName = "FitRngDN"
@@ -854,8 +855,8 @@ class AlphaSourceFitter:
 ##            systFitRng = [fitRng[0]*0.95,fitRng[1]*0.95]
 
 ##        systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.TwoGausFitEngPeakBase(mHist,sigName,systFitRng,nScale,rType)
-##        print "[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-##        print "-"*100
+##        print("[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
+##        print("-"*100
 
 ##        ########################################################################
 ##        ## Rebin Systematics
@@ -868,7 +869,7 @@ class AlphaSourceFitter:
 ##        nScale_ = nScale*2.0
 
 ##        systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.TwoGausFitEngPeakBase(systHist,sigName,fitRng,nScale_,rType)
-##        print "[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
+##        print("[2GausFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
 
 ##        ########################################################################
 ##        ## Calculate Total Fit Systematics
@@ -879,9 +880,9 @@ class AlphaSourceFitter:
 
 ##        sigmaEngTot = sqrt(sigmaEng*sigmaEng+sigmaSyst)
 
-##        print "="*100
-##        print "[2GausFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot)
-##        print "="*100
+##        print("="*100
+##        print("[2GausFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot)
+##        print("="*100
 ##        ########################################################################
 ##        ## Return Nominal Values
 ##        ########################################################################
@@ -899,28 +900,28 @@ class AlphaSourceFitter:
         #myfit.SetParameters(3.62767e+03,-1.71454e+00,1.58723e-01,4.10776e+03,-1.34531e+00,9.12575e-02)
 
         if len(pars_)>0:
-            print pars_
+            print(pars_)
             myfit.SetParameters(pars_[0],pars_[1],pars_[2],pars_[3],pars_[4],pars_[5])
 
         tmpstatus = mHist.Fit("myfit_%s"%sigName,"SREMQ0","")
         #tmpstatus = mHist.Fit("myfit_%s"%sigName,"SREMQ","same")
-        print "[GausLandauFit Base] chi2 = %f; ndf = %i; nChi2 = %8.5f"%(myfit.GetChisquare()/nScale,myfit.GetNDF()+1,
-                                                                   myfit.GetChisquare()/nScale/(myfit.GetNDF()+1))
+        print("[GausLandauFit Base] chi2 = %f; ndf = %i; nChi2 = %8.5f"%(myfit.GetChisquare()/nScale,myfit.GetNDF()+1,
+                                                                   myfit.GetChisquare()/nScale/(myfit.GetNDF()+1)))
         #if tmpstatus.Status() != 0:
         if tmpstatus.Status() != 4000: # with "M" fit option
-            print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit failed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
-            print "Fit Status = ",tmpstatus.Status()
-            print "EDM = ",tmpstatus.Edm()
+            print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit failed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]")
+            print("Fit Status = ",tmpstatus.Status())
+            print("EDM = ",tmpstatus.Edm())
             #mHist.Fit("myfit_%s"%sigName,"REM","")
-            print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Suggest to change fit range and retry <<<<<<<<<<<<<<<<<<<<<<<<<<<]"
+            print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Suggest to change fit range and retry <<<<<<<<<<<<<<<<<<<<<<<<<<<]")
     ##    else:
-    ##        print "[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit converged <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
+    ##        print("[>>>>>>>>>>>>>>>>>>>>>>>>>>> Fit converged <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<]"
 
         vEng     = myfit.GetParameter(1)
         sigmaEng = myfit.GetParError(1)*sqrt(nScale)
 
-        #print "Delta Mean for  %-20s = %8.5f %%"%(sigName,(tempMax-vEng)/tempMax*100.)
-        print "[GausLandauFit Base] Energy peak for %-20s = %8.5f +/- %-8.5f"%(sigName,vEng,sigmaEng)
+        #print("Delta Mean for  %-20s = %8.5f %%"%(sigName,(tempMax-vEng)/tempMax*100.)
+        print("[GausLandauFit Base] Energy peak for %-20s = %8.5f +/- %-8.5f"%(sigName,vEng,sigmaEng))
         return vEng,sigmaEng,myfit
 
 
@@ -930,15 +931,15 @@ class AlphaSourceFitter:
     def GausLandFitEngPeak(self,mHist,sigName,fitRng,pars_,nScale=1.0):
         systEng = {}
         tmpFit = {}
-        print pars_
-        print "{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49
+        print(pars_)
+        print("{s:{c}>{n}}".format(s=" %s"%sigName,n=50,c='>'),"<"*49)
         ########################################################################
         ## Nominal
         ########################################################################
         vEng,sigmaEng,myfit = self.GausLandFitEngPeakBase(mHist,sigName,fitRng,pars_,nScale)
-        print "="*100
-        print "[GausLandauFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng)
-        print "="*100
+        print("="*100)
+        print("[GausLandauFit Nominal] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEng))
+        print("="*100)
 
         ########################################################################
         ## FitRange Systematics
@@ -949,8 +950,8 @@ class AlphaSourceFitter:
 
         systFitRng = [fitRng[0]*1.05,fitRng[1]*1.05]
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.GausLandFitEngPeakBase(mHist,sigName,systFitRng,pars_,nScale)
-        print "[GausLandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-        print "-"*100
+        print("[GausLandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
+        print("-"*100)
 
         ## DOWN
         systName = "FitRngDN"
@@ -958,8 +959,8 @@ class AlphaSourceFitter:
 
         systFitRng = [fitRng[0]*0.95,fitRng[1]*0.95]
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.GausLandFitEngPeakBase(mHist,sigName,systFitRng,pars_,nScale)
-        print "[GausLandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
-        print "-"*100
+        print("[GausLandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
+        print("-"*100)
 
         ########################################################################
         ## Rebin Systematics
@@ -972,7 +973,7 @@ class AlphaSourceFitter:
         nScale_ = nScale*2.0
 
         systEng[systName][0],systEng[systName][1],tmpFit[systName] = self.GausLandFitEngPeakBase(systHist,sigName,fitRng,pars_,nScale_)
-        print "[GausLandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1])
+        print("[GausLandauFit Systematic (%s)] vEng,sigmaEng = (%8.5f,%8.5f)"%(systName,systEng[systName][0],systEng[systName][1]))
 
         ########################################################################
         ## Calculate Total Fit Systematics
@@ -983,9 +984,9 @@ class AlphaSourceFitter:
 
         sigmaEngTot = sqrt(sigmaEng*sigmaEng+sigmaSyst)
 
-        print "="*100
-        print "[GausLandauFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot)
-        print "="*100
+        print("="*100)
+        print("[GausLandauFit Final (+syst.)] Energy peak for <<%s>> = %8.5f +/- %-8.5f"%("{:^20}".format(sigName),vEng,sigmaEngTot))
+        print("="*100)
         ########################################################################
         ## Return Nominal Values
         ########################################################################
@@ -1018,14 +1019,14 @@ def CalcD(dose,v_f,v_i,vOff_i,vOff_f,vRef_i,vRef_f,type="alpha"):
                    pow(partialR_vRef_f*vRef_f[1],2) + pow(partialR_vRef_i*vRef_i[1],2) +
                    pow(partialR_vOff_f*vOff_f[1],2) + pow(partialR_vOff_i*vOff_i[1],2) )
 
-    print "\n\n"
-    print "%-30s = %8.5f"%("[CalcD] partialR_v_f",partialR_v_f)
-    print "%-30s = %8.5f"%("[CalcD] partialR_v_i",partialR_v_i)
-    print "%-30s = %8.5f"%("[CalcD] partialR_vRef_f",partialR_vRef_f)
-    print "%-30s = %8.5f"%("[CalcD] partialR_vRef_i",partialR_vRef_i)
-    print "%-30s = %8.5f"%("[CalcD] partialR_vOff_f",partialR_vOff_f)
-    print "%-30s = %8.5f"%("[CalcD] partialR_vOff_i",partialR_vOff_i)
-    print "\n\n"
+    print("\n\n")
+    print("%-30s = %8.5f"%("[CalcD] partialR_v_f",partialR_v_f))
+    print("%-30s = %8.5f"%("[CalcD] partialR_v_i",partialR_v_i))
+    print("%-30s = %8.5f"%("[CalcD] partialR_vRef_f",partialR_vRef_f))
+    print("%-30s = %8.5f"%("[CalcD] partialR_vRef_i",partialR_vRef_i))
+    print("%-30s = %8.5f"%("[CalcD] partialR_vOff_f",partialR_vOff_f))
+    print("%-30s = %8.5f"%("[CalcD] partialR_vOff_i",partialR_vOff_i))
+    print("\n\n")
 
     D = -1.*dose[0]/math.log(R)
     sigmaD = sqrt(pow(dose[1]/math.log(R),2)+pow(dose[0]*sigmaR/(pow(math.log(R),2)*R),2))
@@ -1036,21 +1037,21 @@ def CalcD(dose,v_f,v_i,vOff_i,vOff_f,vRef_i,vRef_f,type="alpha"):
     #sigma2 = pow(D,4)*pow(vOff_i[1]/dose[0],2)*pow(v_i[0]-v_f[0],2)*pow((v_i[0]-vOff_i[0])*(v_f[0]-vOff_f[0]),-2)
     ## sigma dose
     #sigma3 = pow(D*dose[1]/dose[0],2)
-    print "%-30s = %8.5f"%("[CalcD] v_f",v_f[0])
-    print "%-30s = %8.5f"%("[CalcD] v_f sigma",v_f[1])
-    print "%-30s = %8.5f"%("[CalcD] v_i",v_i[0])
-    print "%-30s = %8.5f"%("[CalcD] v_i sigma",v_i[1])
-    print "%-30s = %8.5f"%("[CalcD] vOff",vOff_i[0])
-    print "%-30s = %8.5f"%("[CalcD] vOff sigma",vOff_i[1])
-    print "%-30s = %8.5f"%("[CalcD] gain",gain)
-    #print "%-30s = %8.5f"%("[CalcD] gain sigma",gain[1])
-    print "%-30s = %8.5f"%("[CalcD] Light yield ratio",R)
-    print "%-30s = %8.5f"%("[CalcD] R sigma",sigmaR)
-    print "%-30s = %8.5f"%("[CalcD] Dose constant [Mrad]",D)
-    #print "%-30s = [%8.5f,%8.5f,%8.5f,%8.5f]"%("[CalcD] sigmas",sqrt(sigma0),sqrt(sigma1),sqrt(sigma2),sqrt(sigma3))
-    #print "%-30s = [%5.2f, %5.2f, %5.2f]"%("[CalcD] Uncertainties (%)",sqrt(sigma0+sigma1)/D*100.,sqrt(sigma2)/D*100.,sqrt(sigma3)/D*100.)
-    #print "%-30s = %8.5f"%("sigmaD diff",sigmaD-sqrt(sigma0+sigma1+sigma2+sigma3))
-    print "%-30s = %8.5f"%("[CalcD] D sigma",sigmaD)
+    print("%-30s = %8.5f"%("[CalcD] v_f",v_f[0]))
+    print("%-30s = %8.5f"%("[CalcD] v_f sigma",v_f[1]))
+    print("%-30s = %8.5f"%("[CalcD] v_i",v_i[0]))
+    print("%-30s = %8.5f"%("[CalcD] v_i sigma",v_i[1]))
+    print("%-30s = %8.5f"%("[CalcD] vOff",vOff_i[0]))
+    print("%-30s = %8.5f"%("[CalcD] vOff sigma",vOff_i[1]))
+    print("%-30s = %8.5f"%("[CalcD] gain",gain))
+    #print("%-30s = %8.5f"%("[CalcD] gain sigma",gain[1])
+    print("%-30s = %8.5f"%("[CalcD] Light yield ratio",R))
+    print("%-30s = %8.5f"%("[CalcD] R sigma",sigmaR))
+    print("%-30s = %8.5f"%("[CalcD] Dose constant [Mrad]",D))
+    #print("%-30s = [%8.5f,%8.5f,%8.5f,%8.5f]"%("[CalcD] sigmas",sqrt(sigma0),sqrt(sigma1),sqrt(sigma2),sqrt(sigma3))
+    #print("%-30s = [%5.2f, %5.2f, %5.2f]"%("[CalcD] Uncertainties (%)",sqrt(sigma0+sigma1)/D*100.,sqrt(sigma2)/D*100.,sqrt(sigma3)/D*100.)
+    #print("%-30s = %8.5f"%("sigmaD diff",sigmaD-sqrt(sigma0+sigma1+sigma2+sigma3))
+    print("%-30s = %8.5f"%("[CalcD] D sigma",sigmaD))
     if type=="alpha":
         # SPE: 0.01497
         NPE = CalcNPE(v_f[0],vOff_f[0])
@@ -1077,10 +1078,10 @@ def CalcD(dose,v_f,v_i,vOff_i,vOff_f,vRef_i,vRef_f,type="alpha"):
 ##    sigma2 = pow(D,4)*pow(vOff[1]/dose[0],2)*pow(v_i[0]-v_f[0],2)*pow((v_i[0]-vOff[0])*(v_f[0]-vOff[0]),-2)
 ##    ## sigma dose
 ##    sigma3 = pow(D*dose[1],2)
-##    print "%-30s = %8.5f"%("[CalcD] Light yield ratio",R)
-##    print "%-30s = %8.5f"%("[CalcD] Dose constant [Mrad]",D)
-##    print "%-30s = [%8.5f,%8.5f,%8.5f,%8.5f]"%("[CalcD] sigmas",sqrt(sigma0),sqrt(sigma1),sqrt(sigma2),sqrt(sigma3))
-##    print "%-30s = [%5.2f, %5.2f, %5.2f]"%("[CalcD] Uncertainties (%)",sqrt(sigma0+sigma1)/D*100.,sqrt(sigma2)/D*100.,sqrt(sigma3)/D*100.)
+##    print("%-30s = %8.5f"%("[CalcD] Light yield ratio",R)
+##    print("%-30s = %8.5f"%("[CalcD] Dose constant [Mrad]",D)
+##    print("%-30s = [%8.5f,%8.5f,%8.5f,%8.5f]"%("[CalcD] sigmas",sqrt(sigma0),sqrt(sigma1),sqrt(sigma2),sqrt(sigma3))
+##    print("%-30s = [%5.2f, %5.2f, %5.2f]"%("[CalcD] Uncertainties (%)",sqrt(sigma0+sigma1)/D*100.,sqrt(sigma2)/D*100.,sqrt(sigma3)/D*100.)
 ##    if type=="alpha":
 ##        # SPE: 0.01497
 ##        NPE = CalcNPE(v_f[0],vOff[0])
@@ -1126,7 +1127,7 @@ def HistToTGRaphErrorsUniform(h,nf=1,type=0,unc_=0.02):
     'Transforms a TH1/ rootpy.THist into a TGRaphErrors with same values and errors'
     x, y, ex, ey = (array.array('d',[]), array.array('d',[]), array.array('d',[]), array.array('d',[]) )
 
-    print "HERE",unc_
+    print("HERE",unc_)
     for ibin in xrange(h.GetNbinsX()):
         if ibin%nf == 0 and h.GetBinContent(ibin+1)>0.:
             x.append(h.GetBinCenter(ibin+1))
@@ -1135,13 +1136,13 @@ def HistToTGRaphErrorsUniform(h,nf=1,type=0,unc_=0.02):
             if type==0:
                 ex.append(abs(h.GetBinCenter(ibin+1)*unc_))
                 if options.verbose:
-                    print "%i = %5.3f"%(ibin,abs(h.GetBinCenter(ibin+1)*unc_))
+                    print("%i = %5.3f"%(ibin,abs(h.GetBinCenter(ibin+1)*unc_)))
             else:
-                print "WARNING: no other type."
+                print("WARNING: no other type.")
                 exit()
 
     ## Debug
-    #print x[0],":",ey[0]
+    #print(x[0],":",ey[0]
     gr = TGraphErrors(len(x),x,y,ex,ey)
     gr.SetTitle("gr_"+h.GetTitle())
     gr.SetLineColor(h.GetLineColor())
@@ -1174,15 +1175,15 @@ def DrawHistSimple(myfiles_, plotSets_, outDir_, fTag_, doselabel_, hxrng_, opti
     for nf, fl in sorted(plotSets_.items()):
         for ni in range(len(fl)):
             tmpName = "%s_%i"%(nf,ni)
-            if debug_: print tmpName
+            if debug_: print(tmpName)
             fNames_[tmpName] = fl[ni]
             trees_[tmpName] = (myfiles_[fNames_[tmpName]][1]).Get("tree")
             labels_[tmpName] = fNames_[tmpName].split("-")[1]
 
         if debug_:
-            print fNames_
-            print trees_
-            print labels_
+            print(fNames_)
+            print(trees_)
+            print(labels_)
 
         cvsName = "c%s"%nf
         c1 = TCanvas(cvsName,cvsName,800,600)
@@ -1204,7 +1205,7 @@ def DrawHistSimple(myfiles_, plotSets_, outDir_, fTag_, doselabel_, hxrng_, opti
             fntmp = "%s_%i"%(nf,ni)
             xmin, xmax = hxrng_[type_][1],hxrng_[type_][2]
             xbins = int(hxrng_[type_][0]*(xmax-xmin))
-            if debug_: print xbins, xmin, xmax
+            if debug_: print(xbins, xmin, xmax)
 
             myhist_[fNames_[fntmp]] = TH1D("myhist_%s"%(fNames_[fntmp]),"",xbins,xmin,xmax)
             trees_[fntmp].Draw("area*1.e9>>myhist_%s"%(fNames_[fntmp]),"","")
@@ -1254,9 +1255,9 @@ def DrawHistSimple(myfiles_, plotSets_, outDir_, fTag_, doselabel_, hxrng_, opti
         ###############################
         # Some simple comparison
         ###############################
-        print "\n\n"
-        print "="*150
-        print "="*150
+        print("\n\n")
+        print("="*150)
+        print("="*150)
         means_={}
         RMSs_ ={}
         fnref = "%s_0"%nf
@@ -1265,10 +1266,10 @@ def DrawHistSimple(myfiles_, plotSets_, outDir_, fTag_, doselabel_, hxrng_, opti
             means_[fntmp] = myhist_[fNames_[fntmp]].GetMean()
             RMSs_[fntmp] = myhist_[fNames_[fntmp]].GetRMS()
 
-            print "(Mean, RMS) %s %s = (%6.3f,%6.3f)"%(header_,labels_[fntmp],means_[fntmp],RMSs_[fntmp])
+            print("(Mean, RMS) %s %s = (%6.3f,%6.3f)"%(header_,labels_[fntmp],means_[fntmp],RMSs_[fntmp]))
 
             if ni>0:
-                print "(#Delta mean,#Delta RMS) %s vs. %s [%%] = (%5.2f,%5.2f)\n\n"%(
+                print("(#Delta mean,#Delta RMS) %s vs. %s [%%] = (%5.2f,%5.2f)\n\n"%(),
                     labels_[fntmp],labels_[fnref],abs(means_[fntmp]-means_[fnref])/(means_[fntmp]+means_[fnref])*2*100.,
                     abs(RMSs_[fntmp]-RMSs_[fnref])/(RMSs_[fntmp]+RMSs_[fnref])*2*100.)
 
@@ -1281,7 +1282,7 @@ def DrawHistSimple(myfiles_, plotSets_, outDir_, fTag_, doselabel_, hxrng_, opti
 # Common drawing routine for Alpha source drawing and D calculation
 ####################################################################################################
 def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hxrng_, options_, uncreftag_, dosescheme_, debug_=False):
-    if debug_: print "Style [DrawDvsTHist] = ",gStyle.GetName()
+    if debug_: print("Style [DrawDvsTHist] = ",gStyle.GetName())
     ## Setting the value for the pedestal cut. You can define that by passing the option -myPedCut=someValue
     mypedcut = 0.0
     if options_.myPedCut:
@@ -1367,15 +1368,15 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
     ## Currently does nothing (???). One can just set the nscale to 1.
     ## Get number of events by integrating the 2nd hist
     nevt_num = hDC50p.Integral()
-    print nevt_num
+    print(nevt_num)
 
     nevt_den = {}
     nscale   = {}
 
     nevt_den["DC50p"] = hDC50p.Integral()
-    print nevt_den["DC50p"]
+    print(nevt_den["DC50p"])
     nscale["DC50p"] = float(nevt_num)/float(nevt_den["DC50p"])
-    print nscale["DC50p"]
+    print(nscale["DC50p"])
 
     ## Find overall max (this is energy offset)
     ## Fit 1st hist
@@ -1406,16 +1407,16 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
         for ni in range(len(fl)):
             #### Give a temporary name of the form UnIrr_nameIrr_name)
             tmpName = "%s_%i"%(nf,ni)
-            if debug_: print tmpName
+            if debug_: print(tmpName)
             fNames_[tmpName] = fl[ni]
             trees_[tmpName]  = (myfiles_[fNames_[tmpName]][1]).Get("tree")
             labels_[tmpName] = fNames_[tmpName].split("-")[1]
             fitopt_[tmpName] = myfiles_[fNames_[tmpName]][2]
 
         if debug_:
-            print fNames_
-            print trees_
-            print labels_
+            print(fNames_)
+            print(trees_)
+            print(labels_)
 
         cvsName = "c%s"%nf
         c1 = TCanvas(cvsName,cvsName,800,600)
@@ -1443,9 +1444,9 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
 
 
         nevt_den["DC50pp"] = hDC50pp.Integral()
-        print nevt_den["DC50pp"]
+        print(nevt_den["DC50pp"])
         nscale["DC50pp"] = float(nevt_num)/float(nevt_den["DC50pp"])
-        print nscale["DC50pp"]
+        print(nscale["DC50pp"])
 
         ## for plot only
         hDC50pp.Scale(nscale["DC50pp"])
@@ -1457,7 +1458,7 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
         ###############################
         for ni in range(len(fl)):
             fntmp = "%s_%i"%(nf,ni)
-            if debug_: print xbins, xmin, xmax
+            if debug_: print(xbins, xmin, xmax)
 
             if ni == 0:
                 refPlot_.append(fNames_[fntmp])
@@ -1466,7 +1467,7 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
 
             biasOffset_ = 0.0
             if len(fitopt_[fntmp])>3 : biasOffset_ = fitopt_[fntmp][3]
-            print "biasOffset_[%30s] = %f"%(fNames_[fntmp],biasOffset_)
+            print("biasOffset_[%30s] = %f"%(fNames_[fntmp],biasOffset_))
 
             myhist_[fNames_[fntmp]] = TH1D("myhist_%s"%(fNames_[fntmp]),"%s"%(fNames_[fntmp]),xbins,xmin,xmax)
             trees_[fntmp].Draw("area*1.e9+%6.4f>>myhist_%s"%(biasOffset_,fNames_[fntmp]),"abs(amplitude)>%f && time>%f"%(mypedcut,timecut))
@@ -1492,11 +1493,11 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
         for ni in range(len(fl)):
             tmpName = "%s_%i"%(nf,ni)
             sigName = fNames_[tmpName]
-            print ">>>>>>>>>>> Processing:", sigName
+            print(">>>>>>>>>>> Processing:", sigName)
             nevt_den[sigName] = myhist_[sigName].Integral()
-            print nevt_den[sigName]
+            print(nevt_den[sigName])
             nscale[sigName] = float(nevt_num)/float(nevt_den[sigName])
-            print nscale[sigName]
+            print(nscale[sigName])
 
             myhist_[sigName].Scale(nscale[sigName])
             myhist_[sigName].SetLineColor(colors_[ni])
@@ -1513,19 +1514,19 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
             elif fitopt_[tmpName][2] == "GL":
                 tmpFitter = AlphaSourceFitter().GausLandFitEngPeak
             else:
-                print "Fitter identifier [%s] not defined. Aborted."%(fitopt_[tmpName][2])
+                print("Fitter identifier [%s] not defined. Aborted."%(fitopt_[tmpName][2]))
                 exit()
 
             vEng_[sigName],sFit_[sigName],myfit_[sigName]=tmpFitter(myhist_[sigName],sigName,fitopt_[tmpName],nscale[sigName])
             uncFit_[sigName] = sFit_[sigName]/vEng_[sigName]
-            print "Uncertainty of %s Fit     = %-6.3f %%"%(sigName,uncFit_[sigName]*100.)
+            print("Uncertainty of %s Fit     = %-6.3f %%"%(sigName,uncFit_[sigName]*100.))
 
 
         #############################################################################################
         ## Calculate dose constant: light loss = exp (-dose/D); D = dose constant
         #############################################################################################
-        print "\n"
-        print "="*150
+        print("\n")
+        print("="*150)
         vDconst_ = {}
         vInput_  = {}
 
@@ -1535,11 +1536,11 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
             uncEng_[sigName]  = math.sqrt(math.pow(uncEng_[uncreftag_],2)+math.pow(uncFit_[sigName],2))
             vInput_[sigName]  = [vEng_[sigName], uncEng_[sigName]*vEng_[sigName]]
 
-        ## print uncertainties
-        print "Offset = %-8.5f"%(vOff[0])
-        print "Uncertainty of [%30s] = %6.3f %%"%("Offset",math.fabs(vOff[1]/vOff[0]*100.))
+        ## print(uncertainties
+        print("Offset = %-8.5f"%(vOff[0]))
+        print("Uncertainty of [%30s] = %6.3f %%"%("Offset",math.fabs(vOff[1]/vOff[0]*100.)))
         for n,v in sorted(uncEng_.items()):
-            print "Uncertainty of [%30s] = %6.3f %%"%(n,v*100.)
+            print("Uncertainty of [%30s] = %6.3f %%"%(n,v*100.))
 
         ###############################
         # The calculation
@@ -1549,7 +1550,7 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
             tmpName = "%s_%i"%(nf,ni)
             sigName = fNames_[tmpName]
             if sigName.find("UnIrr") == -1:
-                print "Calculating Dose Constant for :", sigName
+                print("Calculating Dose Constant for :", sigName)
                 vDconst_[sigName] = CalcD(vDose_[dosescheme_],vInput_[sigName],vInput_[fNames_["%s_0"%(nf)]],vOff)
 
         ###############################
@@ -1561,7 +1562,7 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
             if sigName.find("DC50") != -1: continue
             ## Plot uncertainty band
             try:
-                print "Hist: ",sigName
+                print("Hist: ",sigName)
                 grTemp_[sigName] = HistToTGRaphErrorsUniform(myhist_[sigName],1,0,uncEng_[sigName])
                 grTemp_[sigName].Draw("same e2")
             except:
@@ -1590,7 +1591,7 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
             else:
                 tmpTxt_ = fNames_[fntmp].split("-")[1]
                 tmpTxt_ = tmpTxt_[:len(tmpTxt_)]## don't need that for now ##-1] ## strip "d"
-                if debug_: print tmpTxt_
+                if debug_: print(tmpTxt_)
                 if len(tmpTxt_.lstrip("0")) == 0:
                     leg1.AddEntry(myhist_[fNames_[fntmp]],"0 day aft. irr.","l")
                 else:
@@ -1614,27 +1615,27 @@ def DrawDvsTHist(myfiles_, plotSets_, outDir_, sampleSet_, fTag_, doselabel_, hx
         del hDC50pp
 
         PrintResults(vDconst_, vInput_, vOff, sampleSet_, header_, doselabel_, refPlot_, irrPlots_, fTag_, options_)
-        print "\n\n"
-        print "="*150
-        print "="*150
+        print("\n\n")
+        print("="*150)
+        print("="*150)
 
 
 
 ###############################
-## print results on screen
+## print(results on screen
 ###############################
 def PrintResults(vDconst, vInput, vOff, sampleset, header, doselabel, refPlot, IrrPlots, fTag, poptions):
-    print "\n\n"
-    print "*"*150
+    print("\n\n")
+    print("*"*150)
     for n,v in sorted(vDconst.items()):
-        print "[PrintResults] Dose constant %-30s = %8.5f +/- %-8.5f [%5.2f %%]; R = %8.5f+/- %-8.5f"%(n,v[0],v[1],v[1]/v[0]*100.,v[2],v[3])
+        print("[PrintResults] Dose constant %-30s = %8.5f +/- %-8.5f [%5.2f %%]; R = %8.5f+/- %-8.5f"%(n,v[0],v[1],v[1]/v[0]*100.,v[2],v[3]))
 
     tblName={}
 
     idx=2
 
     for sigName in sorted(IrrPlots):
-        #print sigName
+        #print(sigName
         tmpTxt = sigName.split("-")[1]
         tmpTxt = tmpTxt[:len(tmpTxt)-1] ## strip "d"
         fheader = header.replace(" ","-").replace("_","-")
@@ -1655,81 +1656,81 @@ def PrintResults(vDconst, vInput, vOff, sampleset, header, doselabel, refPlot, I
     filetag = header.replace(" ","_").replace("-","_")
     outTxtFile = "DoseConstants/DoseConst_NS_%s_%s_%s.txt"%(filetag,sampleset,fnameTag)
     outf=open(outTxtFile,'w')
-    print "\n"
-    print "*"*150
+    print("\n")
+    print("*"*150)
     ## sorted by dose const
     outf.write("%-80s\t%8s\t%8s\t%8s\t%8s\n"%("Sample label","D","sigD ","R","sigR "))
     outf.write("Sorted by value:\n")
     for n,v in sorted(vDconst.items(), key=lambda x: x[1]):
-        #print "%-80s: %8.5f +/- %-8.5f; R = %8.5f+/- %-8.5f"%(tblName[n][1],v[0],v[1],v[2],v[3])
+        #print("%-80s: %8.5f +/- %-8.5f; R = %8.5f+/- %-8.5f"%(tblName[n][1],v[0],v[1],v[2],v[3])
         outf.write("%-80s\t%8.5f\t%-8.5f\t%8.5f\t%-8.5f\n"%(tblName[n][1],v[0],v[1],v[2],v[3]))
 
     ## sorted by naming order
     outf.write("\nSorted by name:\n")
     for k,n in sorted(tblName.items(), key=lambda x: x[1]):
-        #print k
-        print "[PrintResults] %-80s: D = %8.5f +/- %-8.5f; R = %8.5f+/- %-8.5f"%(n[1],vDconst[k][0],vDconst[k][1],vDconst[k][2],vDconst[k][3])
+        #print(k
+        print("[PrintResults] %-80s: D = %8.5f +/- %-8.5f; R = %8.5f+/- %-8.5f"%(n[1],vDconst[k][0],vDconst[k][1],vDconst[k][2],vDconst[k][3]))
         outf.write("%-80s\t%8.5f\t%-8.5f\t%8.5f\t%-8.5f\n"%(n[1],vDconst[k][0],vDconst[k][1],vDconst[k][2],vDconst[k][3]))
 
     outf.close()
-    print "\n"
-    print "*"*150
-    print "[PrintResults] Save results to %s"%(outTxtFile)
-    print "*"*150
+    print("\n")
+    print("*"*150)
+    print("[PrintResults] Save results to %s"%(outTxtFile))
+    print("*"*150)
 
     ###############################
-    ## print results for latex
+    ## print(results for latex
     ###############################
-    print "\n\n[PrintResults] Result table in latex format\n"
-    print "\n"
-    print "\\begin{table}[!htbp]"
-    print "  \\begin{center}"
-    print "    \\begin{tabular}{l c c}"
-    print "    \hline\hline"
-    print "    Sample name & Dose constant (D) & Uncertainty ($\sigma_\mathrm{D}$)  \\\ "
-    print "    \hline"
+    print("\n\n[PrintResults] Result table in latex format\n")
+    print("\n")
+    print("\\begin{table}[!htbp]")
+    print("  \\begin{center}")
+    print("    \\begin{tabular}{l c c}")
+    print("    \hline\hline")
+    print("    Sample name & Dose constant (D) & Uncertainty ($\sigma_\mathrm{D}$)  \\\ ")
+    print("    \hline")
 
     for k,n in sorted(tblName.items(), key=lambda x: x[1]):
-        print "    %-40s & %8.5f & %-8.5f  \\\ "%(n[1],vDconst[k][0],vDconst[k][1])
+        print("    %-40s & %8.5f & %-8.5f  \\\ "%(n[1],vDconst[k][0],vDconst[k][1]))
 
-    print "    \hline"
-    print "    \end{tabular}"
-    print "  \end{center}"
-    print "\caption{Dose constant}"
-    print "\label{table:doseConst}"
-    print "\end{table}"
-    print "\n"
+    print("    \hline")
+    print("    \end{tabular}")
+    print("  \end{center}")
+    print("\caption{Dose constant}")
+    print("\label{table:doseConst}")
+    print("\end{table}")
+    print("\n")
 
 
     ###############################
-    ## print npe/MeV results for latex
+    ## print(npe/MeV results for latex
     ###############################
-    print "\n\n[PrintResults] Result npe/MIP table in latex format\n"
-    print "\n"
-    print "\\begin{table}[!htbp]"
-    print "  \\begin{center}"
-    print "    \\begin{tabular}{l c}"
-    print "    \hline\hline"
-    print "    Sample name & $n_{P.E.}/MeV$ \\\ "
-    print "    \hline"
+    print("\n\n[PrintResults] Result npe/MIP table in latex format\n")
+    print("\n")
+    print("\\begin{table}[!htbp]")
+    print("  \\begin{center}")
+    print("    \\begin{tabular}{l c}")
+    print("    \hline\hline")
+    print("    Sample name & $n_{P.E.}/MeV$ \\\ ")
+    print("    \hline")
 
-    print "    %-40s & %5.2f  \\\ "%(header,CalcNPE(vInput[refPlot[0]][0],vOff[0]))
+    print("    %-40s & %5.2f  \\\ "%(header,CalcNPE(vInput[refPlot[0]][0],vOff[0])))
     for k,n in sorted(tblName.items(), key=lambda x: x[1]):
-        print "    %-40s & %5.2f  \\\ "%(n[1],vDconst[k][4])
+        print("    %-40s & %5.2f  \\\ "%(n[1],vDconst[k][4]))
 
-    print "    \hline"
-    print "    \end{tabular}"
-    print "  \end{center}"
-    print "\caption{Number of photoelectrons per MeV.}"
-    print "\label{table:nPEpMeV}"
-    print "\end{table}"
-    print "\n"
+    print("    \hline")
+    print("    \end{tabular}")
+    print("  \end{center}")
+    print("\caption{Number of photoelectrons per MeV.}")
+    print("\label{table:nPEpMeV}")
+    print("\end{table}")
+    print("\n")
 
 
     ###############################
-    ## print results for twiki
+    ## print(results for twiki
     ###############################
-    print "\n\n[PrintResults] Result table for twiki\n"
+    print("\n\n[PrintResults] Result table for twiki\n")
     idx=2
     for sigName in sorted(IrrPlots):
         tmpTxt = sigName.split("-")[1]
@@ -1745,11 +1746,11 @@ def PrintResults(vDconst, vInput, vOff, sampleset, header, doselabel, refPlot, I
         idx+=1
 
     for k,n in sorted(tblName.items(), key=lambda x: x[1]):
-        print "|  <verbatim>%s</verbatim>  |  <verbatim>%8.5f</verbatim>  |  <verbatim>%8.5f</verbatim>  |"%(n[1],vDconst[k][0],vDconst[k][1])
+        print("|  <verbatim>%s</verbatim>  |  <verbatim>%8.5f</verbatim>  |  <verbatim>%8.5f</verbatim>  |"%(n[1],vDconst[k][0],vDconst[k][1]))
 
 
 
 ####################################################################################################
 ####################################################################################################
 if __name__ == '__main__':
-    print "[Common tools for plotting]"
+    print("[Common tools for plotting]")
